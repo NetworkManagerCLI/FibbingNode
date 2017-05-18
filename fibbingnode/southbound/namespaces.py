@@ -2,9 +2,9 @@ import subprocess
 import inspect
 import os
 from time import sleep
-from fibbingnode import log
+from fibbingnode import log, CFG
 from fibbingnode.misc.utils import need_root
-
+from ConfigParser import DEFAULTSECT
 NSDIR = '/var/run/netns'
 
 # Cannot play with net namespaces if we're not root
@@ -22,10 +22,21 @@ class NetworkNamespace(object):
     ID = -1
 
     def __init__(self):
+        self.set_up_ns_ID()
         NetworkNamespace.ID += 1
         self.id = NetworkNamespace.ID
         self.name = 'ns%d' % self.id
         self.create_ns()
+
+    def set_up_ns_ID(self):
+        """
+        update the starting ID of
+        NetworkNamespace Class
+        According to instance_nbr
+        """
+        instance_count = CFG.getint(DEFAULTSECT, 'controller_instance_number')
+        NetworkNamespace.ID = NetworkNamespace.ID + 10*instance_count
+
 
     def create_ns(self):
         if os.path.exists(NSDIR) and ' %s ' % self.name in os.listdir(NSDIR):

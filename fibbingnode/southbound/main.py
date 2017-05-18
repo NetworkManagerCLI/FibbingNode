@@ -175,6 +175,8 @@ def handle_args():
     if args.cfg:
         CFG.read(args.cfg)
         fibbingnode.BIN = CFG.get(DEFAULTSECT, 'quagga_path')
+        instance_nbr = CFG.getint(DEFAULTSECT, 'controller_instance_number')
+        instance_count = instance_nbr
     # Check if we need to force debug mode
     if args.debug:
         CFG.set(DEFAULTSECT, 'debug', '1')
